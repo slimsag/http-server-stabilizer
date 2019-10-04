@@ -228,15 +228,15 @@ func (s *stabilizer) director(req *http.Request) {
 	}
 }
 
-var (
+var workerRestartsCounter prometheus.Counter
+
+func main() {
+	flag.Parse()
+
 	workerRestartsCounter = promauto.NewCounter(prometheus.CounterOpts{
 		Name: *flagPrometheusAppName + "_hss_worker_restarts",
 		Help: "The total number of worker process restarts",
 	})
-)
-
-func main() {
-	flag.Parse()
 
 	if *flagDemo {
 		log.Println("demo: listening at", *flagDemoListen)
