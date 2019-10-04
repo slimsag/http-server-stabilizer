@@ -320,10 +320,19 @@ func main() {
 				})
 				return
 			}
+
+			// Technically we could hit other errors here if e.g. communication
+			// between our reverse proxy and the worker was failing for some
+			// other reason like the network being flooded, but in practice
+			// this is unlikely to happen and instead the most likely case is
+			// that the worker was killed due to another request on the same
+			// worker timing out. In this case, having a different error code
+			// to handle is not that useful so we also return
+			// hss_worker_timeout.
 			log.Printf("worker %v: %v", w.pid, err)
 			_ = json.NewEncoder(rw).Encode(&map[string]interface{}{
 				"error": fmt.Sprintf("worker %v: %v", w.pid, err),
-				"code":  "hss_unknown_error",
+				"code":  "hss_worker_timeout",
 			})
 		},
 	}
