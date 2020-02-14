@@ -210,7 +210,7 @@ func (s *stabilizer) director(req *http.Request) {
 
 	// Pull a worker from the pool and set it as our target.
 	worker := s.acquire()
-	target, _ := url.Parse(fmt.Sprintf("http://localhost:%v", worker.port))
+	target, _ := url.Parse(fmt.Sprintf("http://127.0.0.1:%v", worker.port))
 	log.Println("request", req.URL, target)
 
 	// Copy what httputil.NewSingleHostReverseProxy would do.
