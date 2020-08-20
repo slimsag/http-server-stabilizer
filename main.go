@@ -22,7 +22,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/phayes/freeport"
+	oldfreeport "github.com/phayes/freeport"
+	freeport "github.com/slimsag/freeport"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -150,6 +151,13 @@ func (s *stabilizer) release(w *worker) {
 	}()
 }
 
+func getFreePort() (port int, err error) {
+	if v, _ := strconv.ParseBool(os.Getenv("USE_OLD_FREEPORT")); v == true {
+		return oldfreeport.GetFreePort()
+	}
+	return freeport.GetFreePort()
+}
+
 // ensureWorkers ensures that n workers are always alive. If they die, they
 // will be started again.
 func (s *stabilizer) ensureWorkers(n int) {
@@ -157,7 +165,7 @@ func (s *stabilizer) ensureWorkers(n int) {
 	for i := 0; i < n; i++ {
 		go func(i int) {
 			for {
-				workerPort, err := freeport.GetFreePort()
+				workerPort, err := getFreePort()
 				if err != nil {
 					log.Println("failed to find free port")
 					time.Sleep(1 * time.Second)
