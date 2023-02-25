@@ -9,5 +9,5 @@ require (
 	github.com/prometheus/common v0.7.0 // indirect
 	github.com/prometheus/procfs v0.0.5 // indirect
 	github.com/slimsag/freeport v0.0.0-20200820000215-330cfe47953a
-	golang.org/x/sys v0.0.0-20190927073244-c990c680b611 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 )
